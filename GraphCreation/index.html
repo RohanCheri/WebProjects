@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel = "stylesheet" href= "style.css">
+		<script src = "generateGraph.js"></script>
+		<title>Graph Visualization</title>
+	</head>
+
+	<body>
+		<div class = "header">
+			<button id = "clearGraph" class = "headerBtn" style = "margin-left:2.5%">Clear Graph</button>
+		</div>
+
+		<div class = "drawButtons">
+			<button id = "New_Circle" class = "drawButton" style = "margin-left:2.5%">New Circle</button>
+			<button id = "Connection" class = "drawButton">Connection</button>
+			<button id = "startDFS" class = "drawButton">Run DFS</button>
+
+			<div id = "instText" class = "instructionText"></div>
+
+			<!-- <button id = "nextCycle" class = "drawButton" style = "float:right;margin-right: 0.5%">Next Level</button> -->
+			<button id = "next" class = "drawButton" style = "float:right;margin-right:5%">Next</button>
+			<button id = "reset" class = "drawButton" style = "float:right">Reset</button>
+		</div>
+
+		<canvas id = "canvas" width = "1500" height = "750"></canvas>
+	</body>
+</html>
