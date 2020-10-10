@@ -7,8 +7,11 @@ import java.net.URL;
 
 public class AccessSubCount {
 
-    public static void main(String[] args){
-        executePost("https://counts.live/api/tiktok-follower-count/coolbrownperson/live");
+    public static void main(String[] args) throws InterruptedException {
+        for(int i = 0; i < 1; i++){
+            executePost("https://counts.live/api/tiktok-follower-count/coolbrownperson/live");
+            Thread.sleep(1000);
+        }
     }
 
     public static String executePost(String targetURL){
@@ -23,7 +26,7 @@ public class AccessSubCount {
             conn.setRequestProperty("sec-fetch-site", "Same-origin");
             conn.setRequestProperty("sec-fetch-mode", "cors");
             conn.setRequestProperty("sec-fetch-dest", "empty");
-            conn.setRequestProperty("referer", "https://counts.live/tiktok-follower-count/coolbrownperson");
+            conn.setRequestProperty("referer", "https://counts.live/tiktok-follower-count/coolbrownperson"); //IMPORTANT ONE!!!
             conn.setRequestProperty("if-none-match", "W/\"aa-ylkbZkBkFHbq8AlU1r/P6U3PcIM\"");
             conn.setRequestProperty("dnt", "1");
             conn.setRequestProperty("accept-language", "en-US,en;q=0.9,te;q=0.8,fr;q=0.7");

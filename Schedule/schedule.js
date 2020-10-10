@@ -2,6 +2,15 @@ document.addEventListener('DOMContentLoaded', domLoaded);
 var date, color, orange, black, time, cClass;
 var timeHead, signaled;
 
+// cookiesSet variable determines if all cookies have been set!
+var endDate = new Date(), cDate = new Date();
+if(cDate.getMonth() < 6){
+    endDate.setFullYear(cDate.getFullYear(), 6, 1);
+}
+else{
+    endDate.setFullYear(cDate.getFullYear() + 1, 6, 1);
+}
+
 //Modal Variables
 var modal, span;
 
@@ -41,6 +50,8 @@ function domLoaded(){
     modal = document.getElementById("myModal");
     span = document.getElementsByClassName("close")[0];
 
+    // cookieInitialization();
+
     orange.addEventListener("click", function(){
        color = "orange";
        hideButtons();
@@ -60,6 +71,54 @@ function domLoaded(){
            modal.style.display = 'none';
        }
     });
+}
+
+function cookieInitialization(){
+    alert(checkCookie('cookiesSet'))
+    if(!checkCookie("cookiesSet")){
+        modal.style.display = 'block';
+    }
+}
+
+function setCookie(name, value, date){
+    if(date == null){
+        document.cookie = name + "=" + value + ";expires=" + endDate.toUTCString() + ";path=/";
+    }
+    else{
+        document.cookie = name + "=" + value + ";expires=" + date.toUTCString() + ";path=/";
+    }
+}
+
+function deleteCookie(name){
+    var delDate = new Date();
+    delDate.setFullYear(1980);
+    setCookie(name, "deleted", delDate)
+}
+
+function checkCookie(name){
+    let res = getCookie(name);
+    if(res === ""){
+        return false;
+    }
+
+    return true;
+}
+
+function getCookie(name){
+    name += "=";
+    let decodedCookieStr = decodeURIComponent(document.cookie);
+    let cookies = decodedCookieStr.split(";");
+
+    for(let i = 0; i < cookies.length; i++){
+        let curr = cookies[i];
+        curr = curr.trim();
+
+        if(curr.indexOf(name) == 0){
+            return curr.substring(name.length, curr.length).trim();
+        }
+    }
+
+    return "";
 }
 
 function hideButtons(){
