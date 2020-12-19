@@ -29,7 +29,7 @@ function domLoaded(){
         classTimesSpliced = [[7, 10], [8, 45], [10, 20], [10, 50], [12, 25], [13, 20]];
     }
     else{
-        classTimesSpliced = [[7, 10], [9, 2], [10, 54], [11, 24], [13, 16], [14, 20]]
+        classTimesSpliced = [[7, 10], [9, 7], [10, 59], [11, 24], [13, 12], [14, 20]]
     }
 
     for(let i = 0; i < classTimesSpliced.length; i++){
