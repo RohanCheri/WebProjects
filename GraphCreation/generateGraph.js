@@ -32,7 +32,7 @@ function domLoaded(){
 
 	// Adding event listeners for creating and moving nodes
 	canvasElem.addEventListener('mousedown', function(e){
-		scrrenClicked(e);
+		screenClicked(e);
 	});
 
 	canvasElem.addEventListener('mouseup', function(e){
@@ -253,7 +253,7 @@ var graph = [];
 var queue = [];
 var visited = [];
 
-function scrrenClicked(e){
+function screenClicked(e){
 	finished = false;
 
 	var click = [];
