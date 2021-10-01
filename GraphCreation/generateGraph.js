@@ -1,6 +1,6 @@
-var canvasElem, canvas, addCircle, connection, clearButton, startDFS, next, instructionText, resetBtn;
+var canvasElem, canvas, addCircle, connection, clearButton, startBFS, next, instructionText, resetBtn;
 // var nextCycle;
-var hotCircleClick = false, connActive = false, finished = false, activeDFS = false, inDFS = false;
+var hotCircleClick = false, connActive = false, finished = false, activeBFS = false, inBFS = false;
 var grabbed = -1, startNode = -1, cActive = -1;
 
 document.addEventListener('DOMContentLoaded', domLoaded);
@@ -19,7 +19,7 @@ function domLoaded(){
 	// Initialize Draw Buttons
 	addCircle = document.getElementById('New_Circle');
 	connection = document.getElementById("Connection");
-	startDFS = document.getElementById('startDFS');
+	startBFS = document.getElementById('startBFS');
 
 	next = document.getElementById('next');
 	// nextCycle = document.getElementById('nextCycle');
@@ -36,12 +36,12 @@ function domLoaded(){
 	});
 
 	canvasElem.addEventListener('mouseup', function(e){
-		if(((connActive == false || finished) && grabbed != -1) && !inDFS){
+		if(((connActive == false || finished) && grabbed != -1) && !inBFS){
 			circles[grabbed][2] = false;
 		}
 		
 		grabbed = -1;
-		inDFS = false;
+		inBFS = false;
 		canvasElem.style.cursor = "default";
 		refreshScreen();
 	});
@@ -60,9 +60,9 @@ function domLoaded(){
 
 		connActive = false;
 		hotCircleClick = false;
-		activeDFS = false;
+		activeBFS = false;
 
-		resetDFS();
+		resetBFS();
 		updateAll();
 	});
 
@@ -72,7 +72,7 @@ function domLoaded(){
 	addCircle.addEventListener('click', function(e){
 		hotCircleClick = !hotCircleClick;
 		connActive = false;
-		activeDFS = false;
+		activeBFS = false;
 
 		updateAll();
 	});
@@ -89,7 +89,7 @@ function domLoaded(){
 	connection.addEventListener('click', function(e){
 		connActive = !connActive;
 		hotCircleClick = false;
-		activeDFS = false;
+		activeBFS = false;
 
 		updateAll();
 	});
@@ -102,32 +102,32 @@ function domLoaded(){
 		updateConn();
 	});
 
-	// DFS Starting Buttons
-	startDFS.addEventListener('click', function(e){
+	// BFS Starting Buttons
+	startBFS.addEventListener('click', function(e){
 		connActive = false;
 		hotCircleClick = false;
-		activeDFS = !activeDFS;
+		activeBFS = !activeBFS;
 
 		updateAll();
 		refreshScreen();
 	});
 
-	startDFS.addEventListener('mouseenter', function(){
-		startDFS.style.backgroundColor = "#1a75ff";
+	startBFS.addEventListener('mouseenter', function(){
+		startBFS.style.backgroundColor = "#1a75ff";
 	});
 
-	startDFS.addEventListener('mouseleave', function(){
-		updateDFS();
+	startBFS.addEventListener('mouseleave', function(){
+		updateBFS();
 	});
 
-	//DFS Control Buttons
+	//BFS Control Buttons
 	next.addEventListener('click', function(){
 		nextClicked();
 	});
 
 	resetBtn.addEventListener('click', function(){
-		resetDFS();
-		updateDFS();
+		resetBFS();
+		updateBFS();
 	})
 
 	resizeScreen();
@@ -145,19 +145,17 @@ function resizeScreen(){
 function updateAll(){
 	updateConn();
 	updateAdd();
-	updateDFS();
+	updateBFS();
 }
 
 function updateConn(){
 	cConnection = false;
 
-	if(!activeDFS){
-		for(var i = 0; i < circles.length; i++){
-			circles[i][2] = false;
-		}
-
-		refreshScreen();
+	for(var i = 0; i < circles.length; i++){
+		circles[i][2] = false;
 	}
+
+	refreshScreen();
 	
 
 	if(connActive){
@@ -181,19 +179,19 @@ function updateAdd(){
 	}
 }
 
-function updateDFS(){
-	if(activeDFS){
-		startDFS.style.backgroundColor = "#63f70c";
+function updateBFS(){
+	if(activeBFS){
+		startBFS.style.backgroundColor = "#63f70c";
 		next.style.display = "block";
 		// nextCycle.style.display = "block";
-		instructionText.innerHTML = "Click A Node To Start A DFS From";
+		instructionText.innerHTML = "Click A Node To Start A BFS From";
 		createGraph();
 	}
 	else{
-		startDFS.style.backgroundColor = "#99c2ff";
+		startBFS.style.backgroundColor = "#99c2ff";
 		next.style.display = "none";
 		// nextCycle.style.display = "none";
-		resetDFS();
+		resetBFS();
 		resetText();
 	}
 }
@@ -216,12 +214,12 @@ function createGraph(){
 	}
 }
 
-function resetDFS(){
+function resetBFS(){
 	resetBtn.style.display = "none";
 	queue = [];
 	visited = [];
 	cActive = -1;
-	starNome = -1;
+	startNode = -1;
 
 	for(var i = 0; i < edges.length; i++){
 		edges[i][2] = false;
@@ -235,7 +233,7 @@ function resetDFS(){
 }
 
 function resetText(){
-	if(!activeDFS && !hotCircleClick && !connActive){
+	if(!activeBFS && !hotCircleClick && !connActive){
 		instructionText.innerHTML = "";
 	}
 }
@@ -260,20 +258,25 @@ function screenClicked(e){
 	click.push(e.clientX - canvasElem.offsetLeft);
 	click.push(e.clientY - canvasElem.offsetTop);
 
-	if(hotCircleClick){
+	grabbed = -1;
+	for(var i = 0; i < circles.length; i++){
+		var c = circles[i];
+
+		if(checkWithinCircle(c, click)){
+			grabbed = i;
+			if(visited[i]){
+				inBFS = true;
+			}
+
+			break;
+		}
+	}
+
+	if(hotCircleClick && grabbed === -1){
 		circles.push([click[0], click[1], false]);
 	}
 	else if(connActive){
-		var clickPos = -1;
-
-		for(var i = 0; i < circles.length; i++){
-			var c = circles[i];
-
-			if(checkWithinCircle(c, click)){
-				clickPos = i;
-				break;
-			}
-		}
+		var clickPos = grabbed;
 
 		if(clickPos != -1){
 			if(cConnection === false){
@@ -301,7 +304,7 @@ function screenClicked(e){
 			}
 		}
 	}
-	else if(activeDFS){
+	else if(activeBFS){
 		if(startNode == -1){
 			for(var i = 0; i < circles.length; i++){
 				var c = circles[i];
@@ -313,25 +316,13 @@ function screenClicked(e){
 			}
 
 			if(startNode != -1){
-				instructionText.innerHTML = "Hit Next To Step Through The DFS In Action";
+				instructionText.innerHTML = "Hit Next To Step Through The BFS In Action";
 				circles[startNode][2] = true;
 				queue.push(i);
 			}
 		}
 	}
 
-	for(var i = 0; i < circles.length; i++){
-		var c = circles[i];
-
-		if(checkWithinCircle(c, click)){
-			grabbed = i;
-			if(visited[i]){
-				inDFS = true;
-			}
-
-			break;
-		}
-	}
 	refreshScreen();
 }
 
@@ -341,7 +332,7 @@ function nextClicked(){
 	}
 
 	if(queue.length <= 0){
-		instructionText.innerHTML = "The DFS Has Been Completed";
+		instructionText.innerHTML = "The BFS Has Been Completed";
 		cActive = -1;
 		resetBtn.style.display = "block";
 		refreshScreen();
@@ -403,7 +394,7 @@ function drawAllLines(){
 		var c1 = circles[edges[i][0]], c2 = circles[edges[i][1]];
 
 		canvas.beginPath();
-		canvas.lineWidth = 2 + activeDFS * 1.5;
+		canvas.lineWidth = 2 + activeBFS * 1.5;
 
 		if((edges[i][0] == cActive[0] && edges[i][1] == cActive[1]) || (edges[i][0] == cActive[1] && edges[i][1] == cActive[0])){
 			canvas.strokeStyle = "green";
